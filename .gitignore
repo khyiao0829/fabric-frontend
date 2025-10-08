@@ -1,0 +1,17 @@
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Build output
+build/
+dist/
+*.log
+
+# Gradle
+.gradle/
+build/
+out/
+
+# macOS
+.DS_Store
