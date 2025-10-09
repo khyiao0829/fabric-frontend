@@ -1,16 +1,22 @@
+// src/api/auth.js
 import api from "./axios";
 
-export const signup = (email, password, username) =>
-  api.post("/auth/signup", { email, password, username });
+export async function signup(email, password, username) {
+  return api.post("/auth/signup", { email, password, username });
+}
 
-export const login = (email, password) =>
-  api.post("/auth/login", { email, password });
+export async function login(email, password) {
+  const res = await api.post("/auth/login", { email, password });
+  const token = res.data?.token || res.data;
 
-export const verifyEmail = (token) =>
-  api.get(`/auth/verify?token=${token}`);
+  if (token) {
+    localStorage.setItem("jwt", token);
+  }
 
-// ✅ 추가
-export const logout = () => {
-  // 서버에 로그아웃 요청 (optional)
-  return api.post("/auth/logout");
-};
+  return res;
+}
+
+// ✅ 이메일 인증 추가
+export async function verifyEmail(token) {
+  return api.get(`/auth/verify?token=${token}`);
+}

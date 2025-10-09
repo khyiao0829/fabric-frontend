@@ -1,3 +1,4 @@
+// src/utils/jwt.js
 export function parseJwt(token) {
   try {
     const base64Url = token.split(".")[1];
@@ -10,7 +11,7 @@ export function parseJwt(token) {
     );
     return JSON.parse(jsonPayload);
   } catch (e) {
-    console.error("Invalid JWT:", e);
+    console.error("JWT 파싱 실패:", e);
     return null;
   }
 }
