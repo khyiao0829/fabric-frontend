@@ -1,19 +1,32 @@
-// src/pages/Verify.jsx (프론트 경로: /verify?token=...)
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import api from "../api/axios";
+// src/pages/Verify.jsx
+import React, { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { verifyEmail } from "../api/auth";
 
-export default function Verify(){
-  const q = new URLSearchParams(useLocation().search);
-  const token = q.get("token");
-  const [msg,setMsg] = useState("인증 중...");
+function Verify() {
+  const [params] = useSearchParams();
+  const [message, setMessage] = useState("이메일 인증 중입니다...");
+  const token = params.get("token");
 
-  useEffect(()=>{
-    if(!token){ setMsg("토큰 없음"); return; }
-    api.get(`/auth/verify?token=${encodeURIComponent(token)}`)
-      .then(({data})=> setMsg(data.ok ? "이메일 인증 완료!" : (data.message || "실패")))
-      .catch(()=> setMsg("오류"));
-  },[token]);
+  useEffect(() => {
+    if (!token) {
+      setMessage("잘못된 접근입니다.");
+      return;
+    }
 
-  return <p>{msg}</p>;
+    verifyEmail(token)
+      .then((res) => setMessage(res.data))
+      .catch((err) => {
+        console.error(err);
+        setMessage(err.response?.data?.message || "인증에 실패했습니다.");
+      });
+  }, [token]);
+
+  return (
+    <div className="verify-container">
+      <h2>{message}</h2>
+    </div>
+  );
 }
+
+export default Verify;
